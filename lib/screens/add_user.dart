@@ -14,6 +14,7 @@ class _AddUserState extends State<AddUser> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        // resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text('Add User'),
             leading:

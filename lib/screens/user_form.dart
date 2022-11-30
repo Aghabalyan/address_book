@@ -1,5 +1,8 @@
 import 'package:address_book/models/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class AddUserForm extends StatefulWidget {
   const AddUserForm({super.key});
@@ -15,6 +18,7 @@ class _AddUserFormState extends State<AddUserForm> {
   final addressController = TextEditingController();
 
   bool isEnable = false;
+  File? _imageFile;
 
   List<String> items = [];
   String? selectedAgeItem;
@@ -45,103 +49,122 @@ class _AddUserFormState extends State<AddUserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-         Padding(
-          padding: const EdgeInsets.all(16),
-          child: TextField(
-            onChanged: (_) {
-              setState(() {
-                validateButton();
-              });
-            },
-            controller: firstNameController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'First name',
-            ),
-          ),
-        ),
-         Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-          child: TextField(
-            onChanged: (_) {
-              setState(() {
-                validateButton();
-              });
-            },
-            controller: lastNameController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Last name',
-            ),
-          ),
-        ),
-         Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-          child: TextField(
-            onChanged: (_) {
-              setState(() {
-                validateButton();
-              });
-            },
-            controller: addressController,
-            decoration: const InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: 'Address',
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-          child: SizedBox(
-            width: 600,
-            height: 60,
-            child: DropdownButtonFormField<String>(
-              decoration: InputDecoration(
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular (6),
-                    borderSide: const BorderSide (width: 1, color: Colors.grey),
+
+    return SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            const SizedBox(height: 16,),
+            Center(
+              child: InkWell(
+                child: _imageFile == null ?
+                Image.asset('images/user.png', width: 200.0,height: 200.0,):
+                ClipOval(
+                  child: SizedBox.fromSize(
+                    size: const Size.fromRadius(100.0), // Image radius
+                    child: Image.file(_imageFile!, width: 200.0, height: 200.0, fit: BoxFit.cover,),
+                  ),
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular (6),
-                  borderSide: const BorderSide (width: 1, color: Colors.grey),
-                )
+                onTap: () {
+                  pickImage();
+                },
               ),
-              // value: selectedItem,
-              hint: const Text("Select age"),
-              items: items
-                  .map((item) => DropdownMenuItem<String>(
-                     value: item,
-                     child: Text(item, style: const TextStyle(fontSize: 19, color: Colors.blueGrey)),
-                      ))
-                  .toList(),
-              onChanged: (item) => setState(() {
-                selectedAgeItem = item;
-                validateButton();
-              }),
-            )
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-              minimumSize: const Size.fromHeight(60), // NEW
             ),
-            onPressed: isEnable ? () {
-              _hideView();
-            } : null,
-            child: const Text(
-              'Save',
-              style: TextStyle(fontSize: 19),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                onChanged: (_) {
+                  setState(() {
+                    validateButton();
+                  });
+                },
+                controller: firstNameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'First name',
+                ),
+              ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: TextField(
+                onChanged: (_) {
+                  setState(() {
+                    validateButton();
+                  });
+                },
+                controller: lastNameController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Last name',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: TextField(
+                onChanged: (_) {
+                  setState(() {
+                    validateButton();
+                  });
+                },
+                controller: addressController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Address',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: SizedBox(
+                  width: 600,
+                  height: 60,
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular (6),
+                          borderSide: const BorderSide (width: 1, color: Colors.grey),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular (6),
+                          borderSide: const BorderSide (width: 1, color: Colors.grey),
+                        )
+                    ),
+                    // value: selectedItem,
+                    hint: const Text("Select age"),
+                    items: items
+                        .map((item) => DropdownMenuItem<String>(
+                      value: item,
+                      child: Text(item, style: const TextStyle(fontSize: 19, color: Colors.blueGrey)),
+                    ))
+                        .toList(),
+                    onChanged: (item) => setState(() {
+                      selectedAgeItem = item;
+                      validateButton();
+                    }),
+                  )
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  minimumSize: const Size.fromHeight(60), // NEW
+                ),
+                onPressed: isEnable ? () {
+                  _hideView();
+                } : null,
+                child: const Text(
+                  'Save',
+                  style: TextStyle(fontSize: 19),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
-    );
+      );
   }
 
   void _hideView() {
@@ -149,7 +172,21 @@ class _AddUserFormState extends State<AddUserForm> {
         firstNameController.text,
         lastNameController.text,
         int.parse(selectedAgeItem!),
-        addressController.text);
+        addressController.text,
+        _imageFile);
     Navigator.of(context, rootNavigator: true).pop(user);
+  }
+
+  Future pickImage() async {
+    try {
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+      if (image == null) return;
+      final imageTemp = File(image.path);
+      setState(() {
+        _imageFile = imageTemp;
+      });
+    } on PlatformException catch (e) {
+      print('Failed to pick image: $e');
+    }
   }
 }

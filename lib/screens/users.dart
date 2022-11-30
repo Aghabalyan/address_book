@@ -20,10 +20,10 @@ class _Users extends State<Users> {
   void initState() {
     super.initState();
 
-    User user1 = User('Aram', 'Aramyan', 18, 'Yerevan, Nor Norq 12');
-    User user2 = User('Ani', 'Ananyan', 19, 'Yerevan, Kentron 10');
-    User user3 = User('Artur', 'Abelyan', 34, 'Yerevan, Tumanyan 23');
-    User user4 = User('Arman', 'Grigoryan', 34, 'Yerevan, Teryan 14');
+    User user1 = User('Aram', 'Aramyan', 18, 'Yerevan, Nor Norq 12', null);
+    User user2 = User('Ani', 'Ananyan', 19, 'Yerevan, Kentron 10', null);
+    User user3 = User('Artur', 'Abelyan', 34, 'Yerevan, Tumanyan 23', null);
+    User user4 = User('Arman', 'Grigoryan', 34, 'Yerevan, Teryan 14', null);
 
     users.add(user1);
     users.add(user2);
@@ -71,9 +71,13 @@ class _Users extends State<Users> {
                 //  return Row(
                 children: [
                   const SizedBox(width: 8),
-                  Image.asset(
-                    'images/user.png',
-                    scale: 8,
+                 users[index].imageFile == null ?
+                  Image.asset('images/user.png', width: 70.0,height: 70.0,):
+                  ClipOval(
+                    child: SizedBox.fromSize(
+                      size: const Size.fromRadius(35.0), // Image radius
+                      child: Image.file(users[index].imageFile!, width: 70.0, height: 70.0, fit: BoxFit.cover,),
+                    ),
                   ),
                   const SizedBox(width: 16),
                   Column(
@@ -91,6 +95,16 @@ class _Users extends State<Users> {
                       )
                     ],
                   ),
+                  const Spacer(),
+                  IconButton(
+                      onPressed: () {
+                        setState(() {
+                          users.removeAt(index);
+                        });
+                      },
+                      icon: const Icon(Icons.delete, color: Colors.blue,)
+                  ),
+                  const SizedBox(width: 16,)
                 ],
               ));
         },
