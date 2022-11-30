@@ -1,10 +1,16 @@
 
 import 'package:address_book/screens/user_form.dart';
 import 'package:flutter/material.dart';
+import 'package:address_book/models/user.dart';
 
 class AddUser extends StatefulWidget {
-  @override
 
+  const AddUser({super.key, required this.user, required this.title, required this.usersCount});
+  final User? user;
+  final String title;
+  final int? usersCount;
+
+  @override
   State<AddUser> createState() => _AddUserState();
 }
 
@@ -16,18 +22,18 @@ class _AddUserState extends State<AddUser> {
       home: Scaffold(
         // resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: const Text('Add User'),
+          title: Text(widget.title),
             leading:
               IconButton(
                 onPressed: _dismisView,
                 icon: const Icon(Icons.close))
         ),
-        body: AddUserForm(),
+        body: AddUserForm(initialUser: widget.user, usersCount: widget.usersCount),
       ),
     );
   }
 
   void _dismisView() {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context, rootNavigator: true).pop(widget.user);
   }
 }

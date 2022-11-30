@@ -14,28 +14,25 @@ class Users extends StatefulWidget {
 }
 
 class _Users extends State<Users> {
+
   List<User> users = [];
 
   @override
   void initState() {
     super.initState();
 
-    User user1 = User('Aram', 'Aramyan', 18, 'Yerevan, Nor Norq 12', null);
-    User user2 = User('Ani', 'Ananyan', 19, 'Yerevan, Kentron 10', null);
-    User user3 = User('Artur', 'Abelyan', 34, 'Yerevan, Tumanyan 23', null);
-    User user4 = User('Arman', 'Grigoryan', 34, 'Yerevan, Teryan 14', null);
+    User user1 = User(1,'Aram', 'Aramyan', 18, 'Yerevan, Nor Norq 12', null);
+    User user2 = User(2,'Ani', 'Ananyan', 19, 'Yerevan, Kentron 10', null);
 
     users.add(user1);
     users.add(user2);
-    users.add(user3);
-    users.add(user4);
   }
 
   void _showAddUser() async {
     final result = await Navigator.of(context).push(
       CupertinoPageRoute(
         fullscreenDialog: true,
-        builder: (context) => AddUser(),
+        builder: (context) => AddUser(user: null, title: 'Add User', usersCount: users.length),
       ),
     );
     if (result != null && result is User) {
@@ -45,11 +42,20 @@ class _Users extends State<Users> {
     }
   }
 
-  void _showUserDetail(User user) {
-    Navigator.push(
+  void _showUserDetail(User user) async {
+    final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => UserDetail(user: user)),
+      MaterialPageRoute(builder: (context) => UserDetail(initialUser: user,)),
     );
+
+    if (result != null && result is User) {
+      setState(() {
+        if (!users.contains(result)) {
+          users.removeWhere((element) => element.id == result.id);
+          users.add(result);
+        }
+      });
+    }
   }
 
   @override

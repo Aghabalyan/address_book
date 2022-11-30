@@ -1,14 +1,16 @@
-import 'dart:io';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:address_book/models/user.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+
+import 'add_user.dart';
 
 class UserDetail extends StatefulWidget {
-  const UserDetail({super.key, required this.user});
+  const UserDetail({super.key, required this.initialUser});
 
-  final User user;
+  final User initialUser;
 
   @override
   State<UserDetail> createState() => _UserDetailState();
@@ -17,6 +19,7 @@ class UserDetail extends StatefulWidget {
 class _UserDetailState extends State<UserDetail> {
 
   File? _imageFile;
+  late User user = widget.initialUser;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +27,16 @@ class _UserDetailState extends State<UserDetail> {
       home: Scaffold(
         appBar: AppBar(
           leading: InkResponse(
-              onTap: () => Navigator.pop(context),
+              onTap: () => Navigator.of(context, rootNavigator: true).pop(user),
               child: const Icon(Icons.arrow_back_ios_new)),
           title: const Text('Detail page'),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  _showEditUser();
+                },
+                icon: const Icon(Icons.edit)),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
@@ -34,30 +44,36 @@ class _UserDetailState extends State<UserDetail> {
             child: Column(children: [
               const SizedBox(height: 8),
             InkWell(
-              child: widget.user.imageFile == null ?
-              Image.asset('images/user.png', width: 200.0,height: 200.0,):
+              child: user.imageFile == null ?
+              Image.asset(
+                'images/user.png',
+                width: 200.0,
+                height: 200.0,):
                 ClipOval(
                   child: SizedBox.fromSize(
                     size: const Size.fromRadius(100.0), // Image radius
-                    child: Image.file(widget.user.imageFile!, width: 200.0, height: 200.0, fit: BoxFit.cover,),
+                    child: Image.file(
+                      user.imageFile!,
+                      width: 200.0,
+                      height: 200.0,
+                      fit: BoxFit.cover,),
                   ),
                 ),
-              onTap: () {
-                pickImage();
-              },
+              onTap: () { },
             ),
               Text(
-                widget.user.fullName,
+                user.fullName,
                 style: const TextStyle(fontSize: 40),
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
               Text(
-                widget.user.address ?? '- -',
+                user.address ?? '- -',
                 style: const TextStyle(fontSize: 20),
               ),
               const SizedBox(height: 8),
               Text(
-                '${widget.user.age.toString()} years old',
+                '${user.age.toString()} years old',
                 style: const TextStyle(fontSize: 20, color: Colors.grey),
               )
             ]),
@@ -77,6 +93,20 @@ class _UserDetailState extends State<UserDetail> {
       });
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
+    }
+  }
+
+  void _showEditUser() async {
+    final result = await Navigator.of(context).push(
+      CupertinoPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => AddUser(user: user, title: 'Edit User', usersCount: null),
+      ),
+    );
+    if (result != null && result is User) {
+      setState(() {
+          user = result;
+      });
     }
   }
 }

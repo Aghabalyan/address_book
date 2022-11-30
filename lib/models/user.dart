@@ -3,6 +3,7 @@ import 'dart:io';
 
 class User {
 
+  int id;
   String? firstName;
   String? lastName;
   int? age;
@@ -13,5 +14,5 @@ class User {
     return '${firstName ?? ''}  ${lastName ?? ''}';
   }
 
-  User(this.firstName, this.lastName, this.age, this.address, this.imageFile);
+  User(this.id, this.firstName, this.lastName, this.age, this.address, this.imageFile);
 }

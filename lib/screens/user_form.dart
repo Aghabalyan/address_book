@@ -5,7 +5,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class AddUserForm extends StatefulWidget {
-  const AddUserForm({super.key});
+  const AddUserForm({super.key, required this.initialUser, required this.usersCount});
+
+  final User? initialUser;
+  final int? usersCount;
 
   @override
   State<AddUserForm> createState() => _AddUserFormState();
@@ -29,6 +32,23 @@ class _AddUserFormState extends State<AddUserForm> {
       items.add(i.toString());
     }
 
+    final firstName = (widget.initialUser?.firstName ?? '');
+    final lastName = (widget.initialUser?.lastName ?? '');
+    final address = (widget.initialUser?.address ?? '');
+
+    firstNameController.text = firstName;
+    lastNameController.text = lastName;
+    addressController.text = address;
+
+    if (widget.initialUser?.imageFile != null) {
+      _imageFile = widget.initialUser!.imageFile!;
+    }
+
+    if (widget.initialUser?.age != null) {
+      selectedAgeItem = widget.initialUser!.age!.toString();
+    }
+
+    validateButton();
     super.initState();
   }
 
@@ -121,6 +141,7 @@ class _AddUserFormState extends State<AddUserForm> {
                   width: 600,
                   height: 60,
                   child: DropdownButtonFormField<String>(
+                    value: selectedAgeItem,
                     decoration: InputDecoration(
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular (6),
@@ -168,7 +189,9 @@ class _AddUserFormState extends State<AddUserForm> {
   }
 
   void _hideView() {
-    final user = User(
+    final user = User( widget.initialUser == null
+            ? (widget.usersCount ?? 0) + 1
+            : widget.initialUser!.id,
         firstNameController.text,
         lastNameController.text,
         int.parse(selectedAgeItem!),
