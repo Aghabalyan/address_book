@@ -1,3 +1,4 @@
+import 'package:address_book/screens/tab_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:address_book/screens/users.dart';
 
@@ -15,7 +16,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Users(title: 'Address Book'),
+      home: //const Users(title: 'Address Book'),
+          const HomeTabBar(),
     );
   }
 }
