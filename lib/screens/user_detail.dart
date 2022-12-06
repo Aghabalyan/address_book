@@ -18,7 +18,6 @@ class UserDetail extends StatefulWidget {
 
 class _UserDetailState extends State<UserDetail> {
 
-  File? _imageFile;
   late User user = widget.initialUser;
 
   @override
@@ -89,7 +88,7 @@ class _UserDetailState extends State<UserDetail> {
       if (image == null) return;
       final imageTemp = File(image.path);
       setState(() {
-        _imageFile = imageTemp;
+
       });
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');

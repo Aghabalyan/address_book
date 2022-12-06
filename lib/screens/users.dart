@@ -29,7 +29,7 @@ class _Users extends State<Users> {
   }
 
   void _showAddUser() async {
-    final result = await Navigator.of(context).push(
+    final result = await Navigator.of(context,rootNavigator: true).push(
       CupertinoPageRoute(
         fullscreenDialog: true,
         builder: (context) => AddUser(user: null, title: 'Add User', usersCount: users.length),
@@ -43,8 +43,7 @@ class _Users extends State<Users> {
   }
 
   void _showUserDetail(User user) async {
-    final result = await Navigator.push(
-      context,
+    final result = await Navigator.of(context,rootNavigator: true).push(
       MaterialPageRoute(builder: (context) => UserDetail(initialUser: user,)),
     );
 
@@ -115,10 +114,12 @@ class _Users extends State<Users> {
               ));
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddUser,
         tooltip: 'Add',
         child: const Icon(Icons.add),
+
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
