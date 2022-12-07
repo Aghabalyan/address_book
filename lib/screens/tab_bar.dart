@@ -60,7 +60,7 @@ class HomeTabBar extends StatelessWidget {
                 return CupertinoTabView(
                   builder: (BuildContext context) {
                    return Padding(
-                     padding: const EdgeInsets.only(bottom: 50),
+                     padding: const EdgeInsets.only(bottom: 80),
                       child: tabs[index]
                     );
                   },
